@@ -1,0 +1,11 @@
+# Executable
+raytracer
+
+# Object files
+*.o
+
+# Output files
+*.ppm
+
+# OS files
+.DS_Store

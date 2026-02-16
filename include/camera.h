@@ -30,7 +30,7 @@ void render(const hittable& world) {
     std::vector<color> framebuffer(image_width * image_height);
 
     int thread_count = std::thread::hardware_concurrency();
-    if (thread_count == 0) thread_count = 8; // fallback
+    if (thread_count == 0) thread_count = 8; 
 
     std::vector<std::thread> threads;
     int rows_per_thread = image_height / thread_count;
@@ -66,7 +66,7 @@ void render(const hittable& world) {
     for (auto& t : threads)
         t.join();
 
-    // Print image after rendering completes (single-threaded)
+    
     std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 
     for (int j = 0; j < image_height; j++) {
@@ -83,16 +83,16 @@ void render(const hittable& world) {
 
 
   private:
-    /* Private Camera Variables Here */
-    int    image_height;   // Rendered image height
-    point3 center;         // Camera center
-    double pixel_samples_scale;// color scale factor for a sum of pixel samples
-    point3 pixel00_loc;    // Location of pixel 0, 0
-    vec3   pixel_delta_u;  // Offset to pixel to the right
-    vec3   pixel_delta_v; // Offset to pixel below
+    
+    int    image_height;   
+    point3 center;       
+    double pixel_samples_scale;
+    point3 pixel00_loc;    
+    vec3   pixel_delta_u;  
+    vec3   pixel_delta_v; 
     vec3 u,v,w;
-    vec3   defocus_disk_u;       // Defocus disk horizontal radius
-    vec3   defocus_disk_v;       // Defocus disk vertical radius
+    vec3   defocus_disk_u;      
+    vec3   defocus_disk_v;       
 
     void initialize() {
         image_height = int(image_width / aspect_ratio);
@@ -104,7 +104,7 @@ void render(const hittable& world) {
 
         
 
-        // Determine viewport dimensions.
+        
         
         auto theta = degrees_to_radians(vfov);
         auto h = std::tan(theta/2);
@@ -115,19 +115,19 @@ void render(const hittable& world) {
         u = unit_vector(cross(vup,w));
         v = cross(w,u);
 
-        // Calculate the vectors across the horizontal and down the vertical viewport edges.
+        
         vec3 viewport_u = viewport_width*u;
         vec3 viewport_v = viewport_height*-v;
 
-        // Calculate the horizontal and vertical delta vectors from pixel to pixel.
+  
         pixel_delta_u = viewport_u / image_width;
         pixel_delta_v = viewport_v / image_height;
 
-        // Calculate the location of the upper left pixel.
+        
         auto viewport_upper_left = center - (focus_dist * w) - viewport_u/2 - viewport_v/2;
         pixel00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v);
         
-               // Calculate the camera defocus disk basis vectors.
+               
         auto defocus_radius = focus_dist * std::tan(degrees_to_radians(defocus_angle / 2));
         defocus_disk_u = u * defocus_radius;
         defocus_disk_v = v * defocus_radius;
@@ -135,8 +135,7 @@ void render(const hittable& world) {
     }
 
     ray get_ray(int i, int j) const {
-        // Construct a camera ray originating from the origin and directed at randomly sampled
-        // point around the pixel location i, j.
+    
 
         auto offset = sample_square();
         auto pixel_sample = pixel00_loc
@@ -150,12 +149,12 @@ void render(const hittable& world) {
     }
 
     vec3 sample_square() const {
-        // Returns the vector to a random point in the [-.5,-.5]-[+.5,+.5] unit square.
+        
         return vec3(random_double() - 0.5, random_double() - 0.5, 0);
     }
 
      point3 defocus_disk_sample() const {
-        // Returns a random point in the camera defocus disk.
+        
         auto p = random_in_unit_disk();
         return center + (p[0] * defocus_disk_u) + (p[1] * defocus_disk_v);
     }
